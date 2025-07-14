@@ -4,6 +4,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState, useEffect } from "react";
 import L from "leaflet";
+import { FaMapMarkerAlt } from "react-icons/fa"; // Substituído por marcador de mapa
+import ReactDOMServer from "react-dom/server";
 import {
   Container,
   Content,
@@ -11,13 +13,6 @@ import {
   WeatherDetails,
   MapContainerStyled,
 } from "./WeatherCard.styled";
-
-// Configurar o ícone padrão do Leaflet
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
 
 const cities = [
   "São Paulo,BR",
@@ -35,6 +30,18 @@ function MapUpdater({ lat, lon }: { lat: number; lon: number }) {
   }, [lat, lon, map]);
   return null;
 }
+
+// Create a custom Leaflet icon using a React icon
+const createCustomIcon = () => {
+  const iconHtml = ReactDOMServer.renderToString(<FaMapMarkerAlt size={40} color="#e74c3c" />);
+  return L.divIcon({
+    html: iconHtml,
+    className: "", // Remove default Leaflet styles
+    iconSize: [40, 40], // Size of the icon
+    iconAnchor: [20, 40], // Anchor point (center bottom of the icon)
+    popupAnchor: [0, -40], // Popup position relative to the icon
+  });
+};
 
 export const WeatherCard = observer(() => {
   const { weather, loading, error } = weatherStore;
@@ -86,7 +93,7 @@ export const WeatherCard = observer(() => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={[weather.lat, weather.lon]}>
+            <Marker position={[weather.lat, weather.lon]} icon={createCustomIcon()}>
               <Popup>{weather.city}</Popup>
             </Marker>
           </MapContainer>
