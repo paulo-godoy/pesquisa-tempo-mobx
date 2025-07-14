@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api/api";
 
-const API_KEY = "cf91a6eb36893a2e62475028f94f81a3"; // Substitua pela sua chave
+const API_KEY = "cf91a6eb36893a2e62475028f94f81a3"; 
 
 export interface WeatherData {
   city: string;
